@@ -20,7 +20,6 @@ uint8_t my_itoa(int32_t data, uint8_t * ptr, uint32_t base)
 		length = stringsize; 
                 ptr = (uint8_t*)malloc((stringsize+2)*sizeof(uint8_t)); // allocating memory to the pointer
 		ptr = ptr+stringsize+sign;
-		printf("%" PRIu8 "null pointer\n",ptr);
                 *(ptr)='\0'; //the last byte of the string is NULL	
 		while(length>0)
 	          {
