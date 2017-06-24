@@ -58,9 +58,8 @@ int32_t my_atoi(uint8_t * ptr, uint8_t digits, uint32_t base)
    {
    ptr++;
    sign=1;
-   digits--;
    }
-   for(i=digits-1;i!=0;i--)
+   for(i=digits;i!=0;i--)
    {
      b=1;
      if(*ptr>=65)
