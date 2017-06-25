@@ -42,7 +42,6 @@ int8_t test_data1() {
   digits = my_itoa( num, ptr, BASE_16);   
   value = my_atoi( ptr, digits, BASE_16);
   #ifdef VERBOSE
-  printf("  Number of digits %d\n",digits);
   printf("  Initial number: %d\n", num);  
   printf("  Final Decimal number: %d\n", value);  
   #endif

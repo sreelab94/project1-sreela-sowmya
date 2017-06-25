@@ -16,28 +16,24 @@
 
 include sources.mk
 BASENAME = project1
-#CPU = cortex-m0plus
-#ARCH = thumb
-#SPECS = nosys.specs
 
 # define the C compiler to use
-CC = gcc
+
 TARGET = $(BASENAME).elf
-PLATFORM = HOST
+
+
 ifeq ($(PLATFORM),HOST) 
 	CC = gcc
 else ifeq ($(PLATFORM),KL25Z)
 	CC = arm-none-eabi-gcc 
-	@echo  KL25Z compiler set
-  #  CPU = cortex-m0plus
+	CFLAGS = -mcpu=​cortex-m0plus -mthumb -march=​arm -mfpu=fpv4-sp-d16 --specs=nosys.specs
+	LDFLAGS = Xlinker
+  # -mfloat-abi=​ ???
 else ifeq ($(PLATFORM),BBB)
-	CC = ​arm-linux-gnueabi-gcc
-	@echo  BBB compiler set
+	CC = ​arm-linux-gnueabihf-gcc
 endif 
 
-
 # Compile-time flags C programming files
-# #-mcpu=$(CPU) -m$(ARCH) --specs=$(SPECS) -Wall -Werror -g -O0 -std=c99 
 #-g compiles with debug information, O0 - do not optimize the code, use C99 compiler, Wall - Give verbose compiler warnings
 
 CFLAGS =  -g -Wall \
@@ -45,49 +41,26 @@ CFLAGS =  -g -Wall \
           -std=c99 \
           -D VERBOSE \
           -D PROJECT1 \
-          -Werror \
+          -Werror  
+
 # define any directories containing header files other than /usr/include
-#
+
 INCLUDES = -I../include/common/ -I../include/kl25z/ -I../include/CMSIS/ -I../platform
 
 LDFLAGS = -Wl,-Map=$(BASENAME).map 
 
-#LIBS = -lmylib -lm
-#LIBS = 
-
-#SRCS = memory.c conversion.c project1.c system_MKL25Z4.c main.c debug.c
-
-#DEPS = $(SRCS:.c=.d)
-
-# define the C object files 
-#
-# This uses Suffix Replacement within a macro:
-#   $(name:string1=string2)
-#         For each word in 'name' replace 'string1' with 'string2'
-# Below we are replacing the suffix .c of all words in the macro SRCS
-# with the .o suffix
-#
-#DEPS = $(SRCS:.c=.d)
-
+DEPS = $(SRCS:.c=.d)
 OBJS = $(SRCS:.c=.o)
 
-all:    $(TARGET)
-	@echo  Build successfully
+.PHONY: build
+build: $(TARGET) 
 
-$(TARGET): $(OBJS) 
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS) 
+$(TARGET): $(OBJS) DEPENDS
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS)
 
-#.c.o:
-#	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-%.i:
-	$(CC) $(CFLAGS) $(INCLUDES) -E $(SRCS) $(LFLAGS) 
-
-%.o:%.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^ 
-
-%.asm: 
-	$(CC) $(CFLAGS) $(INCLUDES) -S $(SRCS) $(LFLAGS) 
+DEPENDS:
+	$(CC) $(CFLAGS) $(INCLUDES) -M $(SRCS) $(DEPS) -o $@  $^  
+	@echo  Build with .d files, .o files and .elf executable successfull
 
 .PHONY: compile-all
 compile-all: 
@@ -95,12 +68,17 @@ compile-all:
 
 .PHONY: clean
 clean:
-	$(RM) *.o *.map *.asm *.i *.out *.s *.d *~ $(TARGET)          
+	$(RM) *.o *.map *.asm *.i *.out *.s *.d *~ $(TARGET) 
 
-#.PHONY: build
-#build: $(OBJS) 	
-	#$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS) 
+%.i: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -E -o $@ $^  
 
-#build-all: $(OBJS) 	
-#	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS 
+%.o:%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^ 
+
+%.asm: 
+	$(CC) $(CFLAGS) $(INCLUDES) -S $(SRCS) $(LFLAGS) 
+
+         
+
 
