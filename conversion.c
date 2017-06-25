@@ -18,7 +18,6 @@ uint8_t my_itoa(int32_t data, uint8_t * ptr, uint32_t base)
                   stringsize ++;
 		}
 		length = stringsize; 
-                ptr = (uint8_t*)malloc((stringsize+2)*sizeof(uint8_t)); // allocating memory to the pointer
 		ptr = ptr+stringsize+sign;
                 *(ptr)='\0'; //the last byte of the string is NULL	
 		while(length>0)
@@ -107,6 +106,7 @@ uint32_t t;
    data++;
    i=i-2;
   }
+ return 0;
  }
 }
 
@@ -132,5 +132,6 @@ uint32_t t;
    data++;
    i=i-2;
   }
+  return 0;
  }
 }
