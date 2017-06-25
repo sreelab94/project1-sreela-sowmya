@@ -28,20 +28,24 @@ ifeq ($(PLATFORM),HOST)
 	CC = gcc
 else ifeq ($(PLATFORM),KL25Z)
 	CC = arm-none-eabi-gcc 
+	@echo  KL25Z compiler set
   #  CPU = cortex-m0plus
 else ifeq ($(PLATFORM),BBB)
 	CC = ​arm-linux-gnueabi-gcc
+	@echo  BBB compiler set
 endif 
 
 
 # Compile-time flags C programming files
 # #-mcpu=$(CPU) -m$(ARCH) --specs=$(SPECS) -Wall -Werror -g -O0 -std=c99 
-CFLAGS =  -g \
-          -Werror \
+#-g compiles with debug information, O0 - do not optimize the code, use C99 compiler, Wall - Give verbose compiler warnings
+
+CFLAGS =  -g -Wall \
+          -O0 \
           -std=c99 \
           -D VERBOSE \
           -D PROJECT1 \
-
+          -Werror \
 # define any directories containing header files other than /usr/include
 #
 INCLUDES = -I../include/common/ -I../include/kl25z/ -I../include/CMSIS/ -I../platform
@@ -65,14 +69,9 @@ LDFLAGS = -Wl,-Map=$(BASENAME).map
 #
 OBJS = $(SRCS:.c=.o)
 
-.PHONY: depend clean
 
 all:    $(TARGET)
-	@echo  Simple compiler named mycc has been compiled
-
-#DEPS is added now
-#$(TARGET): $(OBJS) 
-#	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS) $(LIBS)
+	@echo  Build successfully
 
 $(TARGET): $(OBJS) 
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS) 
@@ -80,12 +79,25 @@ $(TARGET): $(OBJS)
 .c.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-#for now .d is added
+# Stuff I wrote -
+
+%.i:
+	$(CC) $(CFLAGS) $(INCLUDES) -E $(SRCS) $(LFLAGS) 
+
+#%.o:
+#	$(CC) $(CFLAGS) $(INCLUDES) -o $(OBJS)  
+
+
+#%.asm: 
+
+.PHONY: compile-all
+compile-all: 
+	$(CC) $(CFLAGS) $(INCLUDES) -c $(SRCS)
+
+.PHONY: clean
 clean:
-	$(RM) *.o *~ $(TARGET)          
+	$(RM) *.o *.map *.asm *.i *.out *~ $(TARGET)          
 
-depend: $(SRCS)
-	makedepend $(INCLUDES) $^
-
-build $(PLATFORM):
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS) $(LIBS)
+.PHONY: build
+build $(PLATFORM): $(OBJS) 	
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS) 

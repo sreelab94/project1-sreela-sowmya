@@ -1,35 +1,5 @@
 #include "memory.h"
 #include <math.h>
-/*
-void main()
-{
-	uint8_t i,s[20] = "MynameisSowmya",b[20] = "MynameisSowmya";  // = "My name is Sowmya";
-	uint8_t d[20],str_len;
-	//uint32_t * p;
-    uint8_t * p;                          // Pointer for some functions
-
-	printf("\nbefore copy :%s\n",s);
-    //p = my_memmove(s,d,sizeof(s));
-    str_len = sizeof(s)/sizeof(uint8_t);
-    //p = my_memcpy(s,(s+3),str_len);
-    //printf("\n memcpy o/p is %s\n",p);
-    p = my_memmove(s,s+3,str_len);
-    printf("\n after copy is %s\n",p);
-    //p = my_memset(s,7,'&');
-    //p = my_memzero(s,4);
-    //p = my_reverse(s,18);
-    //p = reserve_words(10);
-    /*printf("\n p after change is \n");
-    for(i = 0;i<14;i++)
-        {
-            printf(" %x\n, ",*(p+i));
-
-        } 
-       
-    //free_words(p);
-	return;
-}
-*/
 
 /* 
 This function copies byte by byte from source to destination
@@ -98,7 +68,7 @@ This function sets the source with value till a specified length
 Inputs - Pointer to source, length of bytes to be changed, Value to be placed in the source
 Returns - Pointer to the source
 */
-int8_t * my_memset(uint8_t * src, size_t length, uint8_t value)
+uint8_t * my_memset(uint8_t * src, size_t length, uint8_t value)
 { 
 	uint8_t i;
 	if(src == NULL)
@@ -160,7 +130,7 @@ Returns - A pointer pointing to the allocated memory
 */
 uint32_t * reserve_words(size_t length)
 {
-	int32_t *ptr = (int32_t*) malloc(length * sizeof(int32_t));  //memory allocated using malloc
+	uint32_t *ptr = (uint32_t*) malloc(length * sizeof(uint32_t));  //memory allocated using malloc
     if(ptr == NULL)                     
     {
         printf("Error! memory not allocated.");
