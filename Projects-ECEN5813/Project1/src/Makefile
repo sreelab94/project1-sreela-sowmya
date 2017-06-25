@@ -1,4 +1,4 @@
-#
+# _*_ MakeFile _*_
 
 # Make file for project 1
 # Use : make [targets] [overrides]
@@ -20,14 +20,17 @@ BASENAME = project1
 # define the C compiler to use
 
 TARGET = $(BASENAME).elf
-
-
+INCLUDES = -I../include/common/ -I../include/kl25z/ -I../include/CMSIS/ 
 ifeq ($(PLATFORM),HOST) 
 	CC = gcc
 else ifeq ($(PLATFORM),KL25Z)
 	CC = arm-none-eabi-gcc 
-	CFLAGS = -mcpu=​cortex-m0plus -mthumb -march=​arm -mfpu=fpv4-sp-d16 --specs=nosys.specs
-	LDFLAGS = Xlinker
+INCLUDES = -I../include/common/ -I../include/kl25z/ -I../include/CMSIS/ -I../platform
+	CFLAGS:=-mcpu=cortex-m0plus
+	CFLAGS +=-mthumb -march=armv6-m
+	CFLAGS+=-mfpu=fpv4-sp-d16 
+	CFLAGS+=--specs=nosys.specs 
+	#LDFLAGS = Xlinker
   # -mfloat-abi=​ ???
 else ifeq ($(PLATFORM),BBB)
 	CC = ​arm-linux-gnueabihf-gcc
@@ -36,30 +39,30 @@ endif
 # Compile-time flags C programming files
 #-g compiles with debug information, O0 - do not optimize the code, use C99 compiler, Wall - Give verbose compiler warnings
 
-CFLAGS =  -g -Wall \
-          -O0 \
-          -std=c99 \
-          -D VERBOSE \
-          -D PROJECT1 \
-          -Werror  
+#CFLAGS =  -g -Wall \
+#          -O0 \
+ #         -std=c99 \
+#          -D VERBOSE \
+ #         -D PROJECT1 \
+  #        -Werror  
 
 # define any directories containing header files other than /usr/include
 
-INCLUDES = -I../include/common/ -I../include/kl25z/ -I../include/CMSIS/ -I../platform
-
 LDFLAGS = -Wl,-Map=$(BASENAME).map 
 
-DEPS = $(SRCS:.c=.d)
+#DEPS = $(SRCS:.c=.d)
 OBJS = $(SRCS:.c=.o)
 
 .PHONY: build
 build: $(TARGET) 
 
-$(TARGET): $(OBJS) DEPENDS
+$(TARGET): $(OBJS) DEPENDS.dep
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS)
 
-DEPENDS:
-	$(CC) $(CFLAGS) $(INCLUDES) -M $(SRCS) $(DEPS) -o $@  $^  
+DEPENDS.dep:
+	$(CC) $(CFLAGS) $(INCLUDES) -M $(SRCS) $(DEPS) -o $@  $^  > DEPENDS
+	objdump -a $(OBJS) 
+	size -d $(OBJS)
 	@echo  Build with .d files, .o files and .elf executable successfull
 
 .PHONY: compile-all

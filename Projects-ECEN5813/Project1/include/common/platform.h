@@ -8,9 +8,9 @@
 #define HOST 	3
 
 #if PLATFORM == KL25Z
-  #define printf(a) (void)0
+  #define printf(fmt,args...) void(fmt,##args);
 #else
-  #define printf(a) printf(a)
+  #define printf(fmt,args...) fprintf(stderr,fmt,##args);
 #endif
 
 #endif /*__PLATFORM_H__*/
