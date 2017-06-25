@@ -3,14 +3,14 @@
 
 #include <stdio.h>
 
-#define KL25z 	1
+#define KL25Z 	1
 #define BBB 	2
 #define HOST 	3
 
-#if PLATFORM == KL25z
-  #define Printf(a) (void)0
+#if PLATFORM == KL25Z
+  #define printf(a) (void)0
 #else
-  #define Printf(a) printf(a)
+  #define printf(a) printf(a)
 #endif
 
 #endif /*__PLATFORM_H__*/
