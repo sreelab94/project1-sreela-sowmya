@@ -1,12 +1,19 @@
+
+/**
+ * @file memory.c 
+ * @brief This file contains memory manipulation function definitions
+ * This file contains memory manipulations implementations such as moving memory from one location to another with or without overlap.
+ * my_memcopy() corrupts memory if the memory locations overlap, my_memmove() makes sure data isn't corrupted when memories overlap.
+ * my_memset() and my_memzero() sets memory to a particular value or zero respectively, reserve_words() dynamically allocates memory blocks, free_words() releases memory
+ * @author Sowmya Akella
+ * @date June 25, 2017
+ *
+ */
+
 #include "memory.h"
 #include <math.h>
 
-/* 
-This function copies byte by byte from source to destination
-NOTE : my_memmove() checks the lengths of source and destination hence no memory is corrupted
-Inputs - pointer to source, pointer to destination, length of the bytes to be copied
-Returns - pointer to destination byte
-*/
+
 uint8_t * my_memmove(uint8_t * src, uint8_t * dst, size_t length)
 {
    
@@ -40,12 +47,7 @@ uint8_t * my_memmove(uint8_t * src, uint8_t * dst, size_t length)
     return dst;
 }
 
-/* 
-This function copies byte by byte from source to destination
-NOTE : my_memcpy() doesn't check the lengths of source and destination hence some memory locations could get corrupted with unwanted data
-Inputs - pointer to source, pointer to destination, length of the bytes to be copied
-Returns - pointer to destination byte
-*/
+
 uint8_t * my_memcpy(uint8_t * src, uint8_t * dst, size_t length)
 {
 	uint8_t i;
@@ -63,11 +65,7 @@ uint8_t * my_memcpy(uint8_t * src, uint8_t * dst, size_t length)
  	}
  	return dst; 
 }
-/* 
-This function sets the source with value till a specified length
-Inputs - Pointer to source, length of bytes to be changed, Value to be placed in the source
-Returns - Pointer to the source
-*/
+
 uint8_t * my_memset(uint8_t * src, size_t length, uint8_t value)
 { 
 	uint8_t i;
@@ -82,21 +80,13 @@ uint8_t * my_memset(uint8_t * src, size_t length, uint8_t value)
  	}
     return src;
 }
-/*
-This function zero out all of the memory that a source pointer points to upto a given length 
-Inputs - pointer to source, length
-Returns - Pointer to source
-*/
+
 uint8_t * my_memzero(uint8_t * src, size_t length)
 {
     src = my_memset(src, length, 0);
     return src;
 }
-/*
-This function reverses the contents of a memory location upto a given length
-Input - Source pointer , length of bytes to be reversed
-Output - Pointer to the source
-*/
+
 uint8_t * my_reverse(uint8_t * src, size_t length)
 {
 	uint8_t i;
@@ -111,11 +101,7 @@ uint8_t * my_reverse(uint8_t * src, size_t length)
     }
     return src;
 }
-/*
-Generic swap function to swap two bytes
-Inputs - Two byte pointers a and b pointing to two bytes that need to be swapped
-Outputs - None
-*/
+
 void swap(uint8_t*a, uint8_t*b) 
 {
 	uint8_t temp;
@@ -123,11 +109,7 @@ void swap(uint8_t*a, uint8_t*b)
 	*a = *b;
 	*b = temp;
 }
-/*
-Reserves a given length of memory dynamically 
-Input - Length of the dynamic memory needed
-Returns - A pointer pointing to the allocated memory
-*/
+
 uint32_t * reserve_words(size_t length)
 {
 	uint32_t *ptr = (uint32_t*) malloc(length * sizeof(uint32_t));  //memory allocated using malloc
@@ -139,11 +121,7 @@ uint32_t * reserve_words(size_t length)
     else
     	return ptr;
 }
-/*
-Frees the dynamically allocated memory 
-Input - Pointer to the source
-Returns - None
-*/
+
 void free_words(uint32_t * src)
 {
     if(src == NULL)
