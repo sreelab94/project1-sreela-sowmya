@@ -4,3 +4,6 @@ SRCS =  conversion.c \
         main.c \
         debug.c \
         memory.c
+
+vpath %.c sources
+
