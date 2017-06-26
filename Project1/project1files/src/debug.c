@@ -1,3 +1,13 @@
+/**
+ * @file debug.c 
+ * @brief This file is to be used to debug project 1
+   This file is used to test the outputs of Project 1 by displaying hex output what array that is passed into the function
+ *
+ * @author Sowmya Akella
+ * @date June 25, 2017
+ *
+ */
+
 # include "debug.h"
 
 void print_memory(uint8_t * start, uint32_t length)

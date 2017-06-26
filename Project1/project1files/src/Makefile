@@ -1,32 +1,38 @@
 # _*_ MakeFile _*_
-
-# Make file for project 1
+# Authors : Sowmya Akella and Sreela Pavani
+# Date : June 25 2017
+#
+# This is a make file for executing project1
+# Output executable that is generated after build is project.elf
 # Use : make [targets] [overrides]
-
-# Targets:
-# <FILE>.O - Builds <FILE>.O object file
+#
+# List of Targets:
+# <FILE>.o 
+# <FILE>.i 
+# <FILE>.s
 # build - Builds and links all source files
-# all - Same as build 
+# compile-all - Compiles all the object files
 # clean - Removes all generated files
 
-# Overrides:
-# CPU - ARM Cortex Architecure (cortex-m0plus, cortex-m4)
-# ARCH - ARM Architecture (arm, thumb)
-# SPECS - Specs file to give to the linker (nosys.specs, nano.specs)
-
+# Include all the source files 
 include sources.mk
+
+# Name of the final executable
 BASENAME = project1
 
-# define the C compiler to use
-
+# Name of the final executable with the required extension
 TARGET = $(BASENAME).elf
 INCLUDES = -I../include/common/ -I../include/kl25z/ -I../include/CMSIS/ 
-CFLAGS =  -g -Wall \
+CPPFLAGS = -g 
+#-g compiles with debug information, O0 - do not optimize the code, use C99 compiler, Wall - Give verbose compiler warnings
+CFLAGS =  -Wall \
           -O0 \
           -std=c99 \
           -D VERBOSE \
           -D PROJECT1 \
           -Werror
+
+# define the PLATFORM to be used          
 ifeq ($(PLATFORM),HOST) 
 	CC = gcc
 else ifeq ($(PLATFORM),KL25Z)
@@ -41,44 +47,49 @@ else ifeq ($(PLATFORM),BBB)
 	CC = ​arm-linux-gnueabihf-gcc
 endif 
 
-# Compile-time flags C programming files
-#-g compiles with debug information, O0 - do not optimize the code, use C99 compiler, Wall - Give verbose compiler warnings
-
-# define any directories containing header files other than /usr/include
-
+#Generating project1.map files
 LDFLAGS = -Wl,-Map=$(BASENAME).map 
 
-#DEPS = $(SRCS:.c=.d)
+# Creating object files with names same as .c filenames
 OBJS = $(SRCS:.c=.o)
 
+
+# Targets section #
+# Building the target based on the PLATFORM given during compile time
 .PHONY: build
 build: $(TARGET) 
 
 $(TARGET): $(OBJS) DEPENDS.dep
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LFLAGS)
 
+# Generating dependency files for each source file
 DEPENDS.dep:
-	$(CC) $(CFLAGS) $(INCLUDES) -M $(SRCS) $(DEPS) -o $@  $^  > DEPENDS
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDES) -M $(SRCS) $(DEPS) -o $@  $^  > DEPENDS
 	objdump -a $(OBJS) 
 	size -d $(OBJS)
-	@echo  Build with .d files, .o files and .elf executable successfull
+	@echo  Build with .d files, .o files and .elf executable successful
 
+#Compiles all the source files
 .PHONY: compile-all
 compile-all: 
-	$(CC) $(CFLAGS) $(INCLUDES) -c $(SRCS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDES) -c $(SRCS)
 
+#Cleaning all the executables, preprocessed files etc.
 .PHONY: clean
 clean:
 	$(RM) *.o *.map *.asm *.i *.out *.s *.d *~ $(TARGET) 
 
+#To generate preprocessed files for the given .c files
 %.i: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -E -o $@ $^  
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDES) -E -o $@ $^  
 
+#To generate object files for the given .c files
 %.o:%.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^ 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDES) -c -o $@ $^ 
 
+#To generate assembly(.s) files for the given .c files
 %.asm: 
-	$(CC) $(CFLAGS) $(INCLUDES) -S $(SRCS) $(LFLAGS) 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDES) -S $(SRCS) $(LFLAGS) 
 
          
 
