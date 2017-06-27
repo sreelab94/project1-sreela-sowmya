@@ -29,8 +29,7 @@ CFLAGS =  -Wall \
           -O0 \
           -std=c99 \
           -D VERBOSE \
-          -D PROJECT1 \
-          -Werror
+          -D PROJECT1
 
 # define the PLATFORM to be used          
 ifeq ($(PLATFORM),HOST) 
@@ -44,7 +43,7 @@ INCLUDES = -I../include/common/ -I../include/kl25z/ -I../include/CMSIS/ -I../pla
 	CFLAGS+=--specs=nosys.specs 
   # -mfloat-abi=​ ???
 else ifeq ($(PLATFORM),BBB)
-	CC = ​arm-linux-gnueabihf-gcc
+	CC = arm-linux-gnueabihf-gcc
 endif 
 
 #Generating project1.map files
